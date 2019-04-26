@@ -74,7 +74,6 @@
   (setq recentf-max-saved-items 200)
   (setq recentf-exclude '((expand-file-name package-user-dir)
                           ".cache"
-                          ".cask"
                           ".elfeed"
                           "bookmarks"
                           "cache"

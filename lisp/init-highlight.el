@@ -111,10 +111,6 @@
     (remove-overlays (point-min) (point-max) 'ovrainbow t))
   (advice-add #'rainbow-turn-off :after #'my-rainbow-clear-overlays))
 
-;; Highlight brackets according to their depth
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
 ;; Highlight TODO and similar keywords in comments and strings
 (use-package hl-todo
   :custom-face (hl-todo ((t (:box t :inherit))))

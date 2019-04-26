@@ -34,12 +34,8 @@
   :diminish
   :hook ((after-init . dap-mode)
          (dap-mode . dap-ui-mode)
-
-         (python-mode . (lambda () (require 'dap-python)))
-         (go-mode . (lambda () (require 'dap-go)))
          (java-mode . (lambda () (require 'dap-java)))
-         ((c-mode c++-mode objc-mode swift) . (lambda () (require 'dap-lldb)))
-         (php-mode . (lambda () (require 'dap-php)))))
+         ((c-mode c++-mode objc-mode swift) . (lambda () (require 'dap-lldb)))))
 
 (provide 'init-dap)
 

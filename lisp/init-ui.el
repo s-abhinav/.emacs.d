@@ -275,7 +275,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq visible-bell t)
 (size-indication-mode 1)
-;; (blink-cursor-mode -1)
+(blink-cursor-mode -1)
 (setq track-eol t)                      ; Keep cursor at end of lines. Require line-move-visual is nil.
 (setq line-move-visual nil)
 (setq inhibit-compacting-font-caches t) ; Don’t compact font caches during GC.
@@ -296,8 +296,6 @@
            ("C-s-f" . toggle-frame-fullscreen) ; Compatible with macOS
            ("S-s-<return>" . toggle-frame-fullscreen)
            ("M-S-<return>" . toggle-frame-fullscreen))
-
-(toggle-frame-fullscreen)
 
 (provide 'init-ui)
 

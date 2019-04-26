@@ -268,58 +268,11 @@
       :bind (:map counsel-mode-map
                   ("C-<f6>" . counsel-osx-app)))))
 
-  ;; Display world clock using Ivy
-  (use-package counsel-world-clock
-    :bind (:map counsel-mode-map
-                ("C-c c k" . counsel-world-clock)))
-
   ;; Tramp ivy interface
   (use-package counsel-tramp
     :bind (:map counsel-mode-map
                 ("C-c c v" . counsel-tramp)))
-
-  ;; Support pinyin in Ivy
-  ;; Input prefix ':' to match pinyin
-  ;; Refer to  https://github.com/abo-abo/swiper/issues/919 and
-  ;; https://github.com/pengpengxp/swiper/wiki/ivy-support-chinese-pinyin
-  (use-package pinyinlib
-    :functions ivy--regex-plus ivy--regex-ignore-order
-    :commands pinyinlib-build-regexp-string
-    :preface
-    (defun ivy--regex-pinyin (str)
-      "The regex builder wrapper to support pinyin."
-      (or (pinyin-to-utf8 str)
-          (ivy--regex-plus str)
-          (ivy--regex-ignore-order str)))
-    (defun my-pinyinlib-build-regexp-string (str)
-      "Build a pinyin regexp sequence from STR."
-      (cond ((equal str ".*")
-             ".*")
-            (t
-             (pinyinlib-build-regexp-string str t))))
-    (defun my-pinyin-regexp-helper (str)
-      "Construct pinyin regexp for STR."
-      (cond ((equal str " ")
-             ".*")
-            ((equal str "")
-             nil)
-            (t
-             str)))
-    (defun pinyin-to-utf8 (str)
-      (cond ((equal 0 (length str))
-             nil)
-            ((equal (substring str 0 1) "!")
-             (mapconcat 'my-pinyinlib-build-regexp-string
-                        (remove nil (mapcar 'my-pinyin-regexp-helper
-                                            (split-string
-                                             (replace-regexp-in-string "!" "" str ) "")))
-                        ""))
-            (t
-             nil)))
-    :init
-    (push '(swiper . ivy--regex-pinyin) ivy-re-builders-alist)
-    (push '(swiper-all . ivy--regex-pinyin) ivy-re-builders-alist)
-    (push '(swiper-isearch . ivy--regex-pinyin) ivy-re-builders-alist)))
+  )
 
 ;; More friendly display transformer for Ivy
 (use-package ivy-rich

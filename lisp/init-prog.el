@@ -41,7 +41,6 @@
                                 ("->" . ?→)
                                 ("->>" . ?↠)
                                 ("=>" . ?⇒)
-                                ("map" . ?↦)
                                 ("/=" . ?≠)
                                 ("!=" . ?≠)
                                 ("==" . ?≡)
@@ -51,9 +50,7 @@
                                 (">>=" . (?≫ (Br . Bl) ?=))
                                 ("<=<" . ?↢)
                                 (">=>" . ?↣)
-                                ("&&" . ?∧)
-                                ("||" . ?∨)
-                                ("not" . ?¬))))))
+                                ("||" . ?∨))))))
   :init (setq prettify-symbols-unprettify-at-point 'right-edge))
 
 ;; Compilation Mode
@@ -103,11 +100,7 @@
   :bind (("C-<f5>" . quickrun)
          ("C-c x" . quickrun)))
 
-(use-package cask-mode)
-(use-package csharp-mode)
 (use-package dockerfile-mode)
-(use-package powershell)
-(use-package vimrc-mode)
 (use-package rmsbolt)                   ; A compiler output viewer
 
 ;; New `conf-toml-mode' in Emacs 26
@@ -117,34 +110,6 @@
 (use-package editorconfig
   :diminish editorconfig-mode
   :hook (after-init . editorconfig-mode))
-
-;; Batch Mode eXtras
-(use-package bmx-mode
-  :after company
-  :diminish bmx-mode
-  :hook (after-init . bmx-mode-setup-defaults))
-
-(use-package fish-mode
-  :hook (fish-mode . (lambda ()
-                       (add-hook 'before-save-hook
-                                 #'fish_indent-before-save))))
-
-(use-package swift-mode
-  :config
-  (use-package flycheck-swift
-    :after flycheck
-    :commands flycheck-swift-setup
-    :init (flycheck-swift-setup)))
-
-(use-package rust-mode
-  :config (setq rust-format-on-save t))
-
-(use-package dart-mode
-  :init (setq dart-format-on-save t)
-  :config
-  (with-eval-after-load "projectile"
-    (add-to-list 'projectile-project-root-files-bottom-up "pubspec.yaml")
-    (add-to-list 'projectile-project-root-files-bottom-up "BUILD")))
 
 (provide 'init-prog)
 

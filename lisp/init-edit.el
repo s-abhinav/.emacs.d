@@ -114,11 +114,6 @@
   :bind (("M-o" . ace-link-addr))
   :hook (after-init . ace-link-setup-default))
 
-;; Jump to Chinese characters
-(use-package ace-pinyin
-  :diminish
-  :hook (after-init . ace-pinyin-global-mode))
-
 ;; Minor mode to aggressively keep your code always indented
 (use-package aggressive-indent
   :diminish

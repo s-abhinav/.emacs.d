@@ -73,30 +73,16 @@
         org-src-tab-acts-natively t)
 
   (defvar load-language-list '((emacs-lisp . t)
-                               (perl . t)
-                               (python . t)
-                               (ruby . t)
-                               (js . t)
-                               (css . t)
-                               (sass . t)
+                               (scheme . t)
                                (C . t)
                                (java . t)
-                               (plantuml . t)))
+                               ))
+
 
   ;; ob-sh renamed to ob-shell since 26.1.
   (if emacs/>=26p
       (cl-pushnew '(shell . t) load-language-list)
     (cl-pushnew '(sh . t) load-language-list))
-
-  (use-package ob-go
-    :init (cl-pushnew '(go . t) load-language-list))
-
-  (use-package ob-rust
-    :init (cl-pushnew '(rust . t) load-language-list))
-
-  (use-package ob-ipython
-    :if (executable-find "jupyter")     ; DO NOT remove
-    :init (cl-pushnew '(ipython . t) load-language-list))
 
   (org-babel-do-load-languages 'org-babel-load-languages
                                load-language-list)
@@ -137,12 +123,6 @@
     :config
     (org-tree-slide-simple-profile)
     (setq org-tree-slide-skip-outline-level 2))
-
-  ;; Pomodoro
-  (use-package org-pomodoro
-    :after org-agenda
-    :bind (:map org-agenda-mode-map
-                ("P" . org-pomodoro)))
 
   ;; Visually summarize progress
   (use-package org-dashboard)

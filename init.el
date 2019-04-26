@@ -32,6 +32,29 @@
 
 ;;; Code:
 
+;; Add timestamp to the *Messages* buffer.
+(defun sh/current-time-microseconds ()
+  "Return the current time formatted to include microseconds."
+  (let* ((nowtime (current-time))
+         (now-ms (nth 2 nowtime)))
+    (concat (format-time-string "[%Y-%m-%dT%T" nowtime) (format ".%d]" now-ms))))
+
+(defun sh/ad-timestamp-message (FORMAT-STRING &rest args)
+  "Advice to run before `message' that prepends a timestamp to each message.
+
+Activate this advice with:
+(advice-add 'message :before 'sh/ad-timestamp-message)"
+  (unless (string-equal FORMAT-STRING "%s%s")
+    (let ((deactivate-mark nil)
+          (inhibit-read-only t))
+      (with-current-buffer "*Messages*"
+        (goto-char (point-max))
+        (if (not (bolp))
+            (newline))
+        (insert (sh/current-time-microseconds) " ")))))
+
+; (advice-add 'message :before 'sh/ad-timestamp-message)
+
 (when (version< emacs-version "25.1")
   (error "This requires Emacs 25.1 and above!"))
 
@@ -52,20 +75,12 @@
               (add-hook 'focus-out-hook 'garbage-collect))))
 
 ;; Load path
-;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
+;; Optimize: Force "lisp"" at the head to reduce the startup time.
 (defun update-load-path (&rest _)
   "Update `load-path'."
-  (push (expand-file-name "site-lisp" user-emacs-directory) load-path)
   (push (expand-file-name "lisp" user-emacs-directory) load-path))
 
-(defun add-subdirs-to-load-path (&rest _)
-  "Add subdirectories to `load-path'."
-  (let ((default-directory
-          (expand-file-name "site-lisp" user-emacs-directory)))
-    (normal-top-level-add-subdirs-to-load-path)))
-
 (advice-add #'package-initialize :after #'update-load-path)
-(advice-add #'package-initialize :after #'add-subdirs-to-load-path)
 
 (update-load-path)
 
@@ -87,9 +102,7 @@
 (require 'init-edit)
 (require 'init-ivy)
 (require 'init-company)
-(require 'init-yasnippet)
 
-(require 'init-calendar)
 (require 'init-dashboard)
 (require 'init-dired)
 (require 'init-highlight)
@@ -102,9 +115,7 @@
 (require 'init-eshell)
 (require 'init-shell)
 
-(require 'init-markdown)
 (require 'init-org)
-(require 'init-elfeed)
 
 (require 'init-utils)
 
@@ -117,10 +128,6 @@
 
 (require 'init-emacs-lisp)
 (require 'init-c)
-(require 'init-go)
-(require 'init-python)
-(require 'init-ruby)
-(require 'init-web)
 (require 'init-prog)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

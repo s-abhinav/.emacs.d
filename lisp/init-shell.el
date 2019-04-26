@@ -72,10 +72,6 @@
     :init (cl-pushnew '(company-shell company-shell-env company-fish-shell)
                       company-backends))
 
-  ;; Bash completion
-  (use-package bash-completion
-    :init (bash-completion-setup))
-
   ;; ANSI & XTERM 256 color support
   (use-package xterm-color
     :defines compilation-environment
