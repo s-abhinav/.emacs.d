@@ -297,6 +297,8 @@
            ("S-s-<return>" . toggle-frame-fullscreen)
            ("M-S-<return>" . toggle-frame-fullscreen))
 
+(toggle-frame-fullscreen)
+
 (provide 'init-ui)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
