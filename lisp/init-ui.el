@@ -95,7 +95,7 @@
         :init (centaur-load-theme centaur-theme)
         :config
         ;; Enable flashing mode-line on errors
-        (doom-themes-visual-bell-config)
+        ;; (doom-themes-visual-bell-config)
         ;; Corrects (and improves) org-mode's native fontification.
         (doom-themes-org-config)
         ;; Enable custom treemacs theme (all-the-icons must be installed!)
@@ -273,7 +273,7 @@
 
 ;; Misc
 (fset 'yes-or-no-p 'y-or-n-p)
-(setq visible-bell t)
+(setq visible-bell nil)
 (size-indication-mode 1)
 (blink-cursor-mode -1)
 (setq track-eol t)                      ; Keep cursor at end of lines. Require line-move-visual is nil.
