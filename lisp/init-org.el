@@ -39,7 +39,9 @@
   :functions hydra-org-template/body
   :bind (("C-c a" . org-agenda)
          ("C-c b" . org-switchb))
-  :hook (org-indent-mode . (lambda() (diminish 'org-indent-mode)))
+  :hook ((org-mode . org-indent-mode)
+         (org-mode . visual-line-mode)
+         (org-indent-mode . (lambda() (diminish 'org-indent-mode))))
   :config
   (setq org-agenda-files '("~/org")
         org-todo-keywords '((sequence "TODO(T)" "DOING(I)" "HANGUP(H)" "|" "DONE(D)" "CANCEL(C)")
