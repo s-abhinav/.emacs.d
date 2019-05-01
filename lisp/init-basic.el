@@ -55,6 +55,9 @@
     (setq exec-path-from-shell-check-startup-files nil)
     (setq exec-path-from-shell-variables '("PATH" "MANPATH" "PYTHONPATH" "GOPATH"))
     (setq exec-path-from-shell-arguments '("-l"))
+    (when sys/mac-x-p ;; mac ports binaries.
+      (setenv "PATH" (concat (getenv "PATH") ":/opt/local/bin"))
+      (setq exec-path (append exec-path '("/opt/local/bin"))))
     (exec-path-from-shell-initialize)))
 
 ;; Start server

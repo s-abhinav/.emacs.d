@@ -127,6 +127,7 @@ Activate this advice with:
 (require 'init-dap)
 
 (require 'init-emacs-lisp)
+(require 'init-lisp)
 (require 'init-c)
 (require 'init-prog)
 
