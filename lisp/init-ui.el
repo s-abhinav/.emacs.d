@@ -271,6 +271,25 @@
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-echo-area-message t)
 
+;; Cursor
+(blink-cursor-mode -1)
+
+;; https://www.gnu.org/software/emacs/manual/html_node/eintr/Miscellaneous.html
+(setq-default
+ default-frame-alist
+ '((cursor-color . "SlateGray")
+   ; (mouse-color . "white")
+   ; (foreground-color . "white")
+   ; (background-color . "DodgerBlue4")
+   (cursor-type . box)
+   ; (tool-bar-lines . 0)
+   ; (menu-bar-lines . 1)
+   ; (width . 80)
+   ; (height . 58)
+   ; (font .
+   ; "-Misc-Fixed-Medium-R-Normal--20-200-75-75-C-100-ISO8859-1")
+   ))
+
 ;; Misc
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq visible-bell nil)
