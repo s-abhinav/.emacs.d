@@ -52,7 +52,9 @@
         org-startup-indented t
         org-ellipsis (if (char-displayable-p ?) "  " nil)
         org-pretty-entities t
-        org-hide-emphasis-markers t)
+        org-hide-emphasis-markers t
+        org-src-window-setup 'current-window
+        )
 
   (add-to-list 'org-export-backends 'md)
 
