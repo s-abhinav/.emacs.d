@@ -33,11 +33,6 @@
 (eval-when-compile
   (require 'init-const))
 
-;; Highlight the current line
-(use-package hl-line
-  :ensure nil
-  :hook (after-init . global-hl-line-mode))
-
 ;; Highlight symbols
 (use-package symbol-overlay
   :diminish
