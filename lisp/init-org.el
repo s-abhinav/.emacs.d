@@ -77,6 +77,7 @@
         org-src-tab-acts-natively t)
 
   (defvar load-language-list '((emacs-lisp . t)
+                               (lisp .t)
                                (scheme . t)
                                (C . t)
                                (java . t)
@@ -145,22 +146,23 @@
 
   (defhydra hydra-org-template (:color blue :hint nil)
     "
-_c_enter  qu_o_te     _e_macs-lisp    _L_aTeX:
-_l_atex   _E_xample   p_y_thon        _i_ndex:
+_c_enter  qu_o_te     _e_macs-lisp    _La_TeX:
+_la_tex   _E_xample   p_y_thon        _i_ndex:
 _a_scii   _v_erse     ip_Y_thon       _I_NCLUDE:
 _s_rc     _g_o        _r_uby          _H_TML:
 _h_tml    _S_HELL     _p_erl          _A_SCII:
-^ ^       ^ ^         _P_erl tangled  plant_u_ml
+_li_sp       ^ ^         _P_erl tangled  plant_u_ml
 "
     ("s" (hot-expand "<s"))
     ("E" (hot-expand "<e"))
     ("o" (hot-expand "<q"))
     ("v" (hot-expand "<v"))
     ("c" (hot-expand "<c"))
-    ("l" (hot-expand "<l"))
+    ("la" (hot-expand "<l"))
+    ("li" (hot-expand "<s" "lisp :exports both :results replace drawer" ))
     ("h" (hot-expand "<h"))
     ("a" (hot-expand "<a"))
-    ("L" (hot-expand "<L"))
+    ("La" (hot-expand "<L"))
     ("i" (hot-expand "<i"))
     ("e" (hot-expand "<s" "emacs-lisp"))
     ("y" (hot-expand "<s" "python :results output"))
