@@ -35,7 +35,7 @@
 
 (use-package counsel
   :diminish ivy-mode counsel-mode
-  :defines (projectile-completion-system magit-completing-read-function)
+  :defines (projectile-completion-system magit-completing-read-function recentf-list)
   :commands swiper-isearch
   :bind (("C-s" . swiper-isearch)
          ("s-f" . swiper)
@@ -96,7 +96,11 @@
          ("C-h" . counsel-up-directory)
 
          :map swiper-map
-         ("M-%" . swiper-query-replace))
+         ("M-s" . swiper-isearch-toggle)
+         ("M-%" . swiper-query-replace)
+
+         :map isearch-mode-map
+         ("M-s" . swiper-isearch-toggle))
   :hook ((after-init . ivy-mode)
          (ivy-mode . counsel-mode))
   :config
@@ -109,16 +113,6 @@
   (setq ivy-on-del-error-function nil)
   ;; (setq ivy-format-function 'ivy-format-function-arrow)
   (setq ivy-initial-inputs-alist nil)
-  (setq ivy-re-builders-alist
-        '((swiper . ivy--regex-plus)
-          (swiper-all . ivy--regex-plus)
-          (swiper-isearch . ivy--regex-plus)
-          (counsel-ag . ivy--regex-plus)
-          (counsel-rg . ivy--regex-plus)
-          (counsel-pt . ivy--regex-plus)
-          (counsel-ack . ivy--regex-plus)
-          (counsel-grep . ivy--regex-plus)
-          (t . ivy--regex-fuzzy)))
 
   (defun my-ivy-format-function-arrow (cands)
     "Transform CANDS into a string for minibuffer."
@@ -146,6 +140,20 @@
                     "ag -S --noheading --nocolor --nofilename --numbers '%s' %s")
                    (t counsel-grep-base-command))))
     (setq counsel-grep-base-command cmd))
+
+  ;; Build abbreviated recent file list.
+  (defun my-counsel-recentf ()
+    "Find a file on `recentf-list'."
+    (interactive)
+    (require 'recentf)
+    (recentf-mode)
+    (ivy-read "Recentf: " (mapcar #'abbreviate-file-name recentf-list)
+              :action (lambda (f)
+                        (with-ivy-window
+                          (find-file f)))
+              :require-match t
+              :caller 'counsel-recentf))
+  (advice-add #'counsel-recentf :override #'my-counsel-recentf)
 
   ;; Pre-fill search keywords
   ;; @see https://www.reddit.com/r/emacs/comments/b7g1px/withemacs_execute_commands_like_marty_mcfly/
@@ -228,11 +236,22 @@
   (with-eval-after-load 'magit
     (setq magit-completing-read-function 'ivy-completing-read))
 
-  ;; Enhance fuzzy matching
-  (use-package flx)
-
   ;; Enhance M-x
-  (use-package amx)
+  (use-package amx
+    :init (setq amx-history-length 20))
+
+  ;; Enhance fuzzy matching
+  (use-package flx
+    :config (setq ivy-re-builders-alist
+                  '((swiper . ivy--regex-plus)
+                    (swiper-all . ivy--regex-plus)
+                    (swiper-isearch . ivy--regex-plus)
+                    (counsel-ag . ivy--regex-plus)
+                    (counsel-rg . ivy--regex-plus)
+                    (counsel-pt . ivy--regex-plus)
+                    (counsel-ack . ivy--regex-plus)
+                    (counsel-grep . ivy--regex-plus)
+                    (t . ivy--regex-fuzzy))))
 
   ;; Additional key bindings for Ivy
   (use-package ivy-hydra
@@ -253,7 +272,10 @@
 
   ;; Select from xref candidates with Ivy
   (use-package ivy-xref
-    :init (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
+    :init
+    (when (boundp 'xref-show-definitions-function)
+      (setq xref-show-definitions-function #'ivy-xref-show-defs))
+    (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
 
   ;; Correcting words with flyspell via Ivy
   (use-package flyspell-correct-ivy
@@ -309,7 +331,7 @@
   (defun ivy-rich-file-icon (candidate)
     "Display file icons in `ivy-rich'."
     (when (display-graphic-p)
-      (let* ((path (concat ivy--directory candidate))
+      (let* ((path (file-local-name (concat ivy--directory candidate)))
              (file (file-name-nondirectory path))
              (icon (cond
                     ((file-directory-p path)
@@ -355,7 +377,7 @@
 
   (when (display-graphic-p)
     (defun ivy-rich-bookmark-type-plus (candidate)
-      (let ((filename (ivy-rich-bookmark-filename candidate)))
+      (let ((filename (file-local-name (ivy-rich-bookmark-filename candidate))))
         (cond ((null filename)
                (all-the-icons-material "block" :v-adjust -0.2 :face 'warning))  ; fixed #38
               ((file-remote-p filename)

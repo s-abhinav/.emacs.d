@@ -56,7 +56,7 @@
   :functions (hydra-frame-window/body my-aw-window<)
   :bind ([remap other-window] . ace-window)
   :custom-face
-  (aw-leading-char-face ((t (:inherit error :bold t :height 1.1))))
+  (aw-leading-char-face ((t (:inherit font-lock-keyword-face :bold t :height 3.0))))
   (aw-mode-line-face ((t (:inherit mode-line-emphasis :bold t))))
   :preface
   (defun toggle-window-split ()
@@ -67,9 +67,9 @@
                (this-win-edges (window-edges (selected-window)))
                (next-win-edges (window-edges (next-window)))
                (this-win-2nd (not (and (<= (car this-win-edges)
-                                        (car next-win-edges))
-                                     (<= (cadr this-win-edges)
-                                        (cadr next-win-edges)))))
+                                           (car next-win-edges))
+                                       (<= (cadr this-win-edges)
+                                           (cadr next-win-edges)))))
                (splitter
                 (if (= (car this-win-edges)
                        (car (window-edges (next-window))))
@@ -83,7 +83,7 @@
             (set-window-buffer (next-window) next-win-buffer)
             (select-window first-win)
             (if this-win-2nd (other-window 1))))))
-  :hook (after-init . ace-window-display-mode)
+  :hook (emacs-startup . ace-window-display-mode)
   :config
   ;; (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
 
@@ -190,6 +190,7 @@ _F_ullscreen            _o_ther         _b_alance^^^^          ^ ^         *  /\
           ("^\\*.*Shell Command.*\\*$" :regexp t :size 0.3 :align 'below :autoclose t)
           ("\\*[Wo]*Man.*\\*" :regexp t :select t :align 'below :autoclose t)
           ("*Calendar*" :select t :size 0.3 :align 'below)
+          ("\\*ivy-occur .*\\*" :regexp t :size 0.4 :select t :align 'below)
           (" *undo-tree*" :select t)
           ("*Paradox Report*" :size 0.3 :align 'below :autoclose t)
           ("*quickrun*" :select t :size 15 :align 'below)
@@ -198,11 +199,12 @@ _F_ullscreen            _o_ther         _b_alance^^^^          ^ ^         *  /\
           ("*Finder*" :select t :size 0.3 :align 'below :autoclose t)
           ("^\\*elfeed-entry" :regexp t :size 0.7 :align 'below :autoclose t)
           ("*lsp-help*" :size 0.3 :align 'below :autoclose t)
+          ("*lsp session*" :size 0.4 :align 'below :autoclose t)
           (" *Org todo*" :select t :size 4 :align 'below :autoclose t)
+          ("*Org Dashboard*" :select t :size 0.4 :align 'below :autoclose t)
 
           (ag-mode :select t :align 'below)
           (grep-mode :select t :align 'below)
-          (ivy-occur-grep-mode :select t :align 'below)
           (pt-mode :select t :align 'below)
           (rg-mode :select t :align 'below)
 

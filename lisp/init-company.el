@@ -55,25 +55,31 @@
     (company-abort)
     (call-interactively 'company-yasnippet))
   :config
-  (setq company-tooltip-align-annotations t ; aligns annotation to the right
-        company-tooltip-limit 12            ; bigger popup window
-        company-idle-delay .2               ; decrease delay before autocompletion popup shows
-        company-echo-delay 0                ; remove annoying blinking
+  (setq company-tooltip-align-annotations t
+        company-tooltip-limit 12
+        company-idle-delay 0
+        company-echo-delay (if (display-graphic-p) nil 0)
         company-minimum-prefix-length 2
         company-require-match nil
         company-dabbrev-ignore-case nil
         company-dabbrev-downcase nil)
 
+  ;; Better sorting and filtering
+  (use-package company-prescient
+    :init (company-prescient-mode 1))
+
   ;; Icons and quickhelp
   (when emacs/>=26p
     (use-package company-box
       :diminish
+      :functions (my-company-box--make-line my-company-box-icons--elisp)
       :hook (company-mode . company-box-mode)
-      :init (setq company-box-icons-alist 'company-box-icons-all-the-icons)
       :config
-      (setq company-box-backends-colors nil)
-      (setq company-box-show-single-candidate t)
-      (setq company-box-max-candidates 50)
+      (setq company-box-backends-colors nil
+            company-box-show-single-candidate t
+            company-box-max-candidates 50
+            company-box-doc-delay 0.5
+            company-box-icons-alist 'company-box-icons-all-the-icons)
 
       ;; Support `company-common'
       (defun my-company-box--make-line (candidate)
@@ -81,7 +87,7 @@
                 (color (company-box--get-color backend))
                 ((c-color a-color i-color s-color) (company-box--resolve-colors color))
                 (icon-string (and company-box--with-icons-p (company-box--add-icon candidate)))
-                (candidate-string (concat (propertize company-common 'face 'company-tooltip-common)
+                (candidate-string (concat (propertize (or company-common "") 'face 'company-tooltip-common)
                                           (substring (propertize candidate 'face 'company-box-candidate) (length company-common) nil)))
                 (align-string (when annotation
                                 (concat " " (and company-tooltip-align-annotations
@@ -151,9 +157,9 @@
     (use-package company-quickhelp
       :defines company-quickhelp-delay
       :bind (:map company-active-map
-                  ("M-h" . company-quickhelp-manual-begin))
+                  ([remap company-show-doc-buffer] . company-quickhelp-manual-begin))
       :hook (global-company-mode . company-quickhelp-mode)
-      :init (setq company-quickhelp-delay 0.8))))
+      :init (setq company-quickhelp-delay 0.5))))
 
 (provide 'init-company)
 

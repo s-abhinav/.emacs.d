@@ -60,16 +60,14 @@
    (use-package lsp-ui
      :custom-face
      (lsp-ui-doc-background ((t (:background nil))))
-     (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
      :bind (:map lsp-ui-mode-map
                  ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
                  ([remap xref-find-references] . lsp-ui-peek-find-references)
                  ("C-c u" . lsp-ui-imenu))
      :init (setq lsp-ui-doc-enable t
-                 lsp-ui-doc-header t
+                 lsp-ui-doc-use-webkit t
                  lsp-ui-doc-include-signature t
                  lsp-ui-doc-position 'top
-                 lsp-ui-doc-use-webkit t
                  lsp-ui-doc-border (face-foreground 'default)
 
                  lsp-ui-sideline-enable nil
@@ -83,10 +81,24 @@
    (use-package company-lsp
      :init (setq company-lsp-cache-candidates 'auto))
 
+   ;; Debug
+   (use-package dap-mode
+     :after lsp-mode
+     :diminish
+     :hook ((after-init . dap-mode)
+            (dap-mode . dap-ui-mode)
+
+            (python-mode . (lambda () (require 'dap-python)))
+            (go-mode . (lambda () (require 'dap-go)))
+            (java-mode . (lambda () (require 'dap-java)))
+            ((c-mode c++-mode objc-mode swift) . (lambda () (require 'dap-lldb)))
+            (php-mode . (lambda () (require 'dap-php)))))
+
    ;; `lsp-mode' and `treemacs' integration.
-   (use-package lsp-treemacs
-     :bind (:map lsp-mode-map
-                 ("M-9" . lsp-treemacs-errors-list)))
+   (when emacs/>=25.2p
+     (use-package lsp-treemacs
+       :bind (:map lsp-mode-map
+                   ("M-9" . lsp-treemacs-errors-list))))
 
    ;; C/C++/Objective-C support
    (use-package ccls

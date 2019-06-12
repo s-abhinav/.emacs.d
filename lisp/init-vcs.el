@@ -36,7 +36,6 @@
 
 ;; Git
 (use-package magit
-  :defines gnutls-algorithm-priority
   :bind (("C-x g" . magit-status)
          ("C-x M-g" . magit-dispatch)
          ("C-c M-g" . magit-file-popup))
@@ -47,22 +46,21 @@
   (if (fboundp 'transient-append-suffix)
       ;; Add switch: --tags
       (transient-append-suffix 'magit-fetch
-        "-p" '("-t" "Fetch all tags" ("-t" "--tags")))))
+        "-p" '("-t" "Fetch all tags" ("-t" "--tags"))))
 
-;; Access Git forges from Magit
-(if (executable-find "cc")
-    (use-package forge
-      :after magit
-      :demand))
+  ;; Access Git forges from Magit
+  (if (executable-find "cc")
+      (use-package forge :demand)))
 
-;; Show tasks
-(use-package magit-todos
-  :hook (after-init . magit-todos-mode))
+;; Show TODOs in magit
+(when emacs/>=25.2p
+  (use-package magit-todos
+    :hook (emacs-startup . magit-todos-mode)))
 
 ;; Walk through git revisions of a file
 (use-package git-timemachine
   :custom-face
-  (git-timemachine-minibuffer-author-face ((t (:inherit font-lock-string-face))))
+  (git-timemachine-minibuffer-author-face ((t (:inherit success))))
   (git-timemachine-minibuffer-detail-face ((t (:inherit warning))))
   :bind (:map vc-prefix-map
               ("t" . git-timemachine)))

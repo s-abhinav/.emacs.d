@@ -55,20 +55,19 @@
          ([M-f3] . symbol-overlay-remove-all))
   :hook ((prog-mode . symbol-overlay-mode)
          (iedit-mode . (lambda () (symbol-overlay-mode -1)))
-         (iedit-mode-end . symbol-overlay-mode)))
-
-;; Highlight matching parens
-(use-package paren
-  :ensure nil
-  :hook (after-init . show-paren-mode)
-  :config
-  (setq show-paren-when-point-inside-paren t)
-  (setq show-paren-when-point-in-periphery t))
+         (iedit-mode-end . symbol-overlay-mode))
+  :init (setq symbol-overlay-idle-time 0.01))
 
 ;; Colorize color names in buffers
 (use-package rainbow-mode
   :diminish
-  :hook ((prog-mode help-mode) . rainbow-mode)
+  :hook ((css-mode js-mode js2-mode html-mode web-mode) . rainbow-mode)
+  :init
+  (defun toggle-rainbow ()
+    "Colorize color names in buffers or not."
+    (interactive)
+    (rainbow-mode (or (and rainbow-mode -1) 1)))
+  (defalias #'centaur-toggle-rainbow #'toggle-rainbow)
   :config
   ;; HACK: Use overlay instead of text properties to override `hl-line' faces.
   ;; @see https://emacs.stackexchange.com/questions/36420
@@ -87,7 +86,6 @@
 
 ;; Highlight TODO and similar keywords in comments and strings
 (use-package hl-todo
-  :custom-face (hl-todo ((t (:box t :inherit))))
   :bind (:map hl-todo-mode-map
               ([C-f3] . hl-todo-occur)
               ("C-c t p" . hl-todo-previous)
@@ -98,7 +96,15 @@
   (dolist (keyword '("BUG" "DEFECT" "ISSUE"))
     (cl-pushnew `(,keyword . ,(face-foreground 'error)) hl-todo-keyword-faces))
   (dolist (keyword '("WORKAROUND" "HACK" "TRICK"))
-    (cl-pushnew `(,keyword . ,(face-foreground 'warning)) hl-todo-keyword-faces)))
+    (cl-pushnew `(,keyword . ,(face-foreground 'warning)) hl-todo-keyword-faces))
+
+  ;; Set `hl-todo' faces
+  ;; Don't use `:custom-face' since it needs `hl-todo' face itself to evaluate
+  (custom-set-faces `(hl-todo ((t (:background
+                                   ,(if (fboundp 'doom-blend)
+                                        (doom-blend (face-foreground 'hl-todo)
+                                                    (face-background 'default)
+                                                    0.2))))))))
 
 ;; Highlight uncommitted changes
 (use-package diff-hl
@@ -142,37 +148,6 @@
   :hook (after-init . volatile-highlights-mode))
 
 ;; Visualize TAB, (HARD) SPACE, NEWLINE
-(use-package whitespace
-  :ensure nil
-  :diminish
-  :hook ((prog-mode outline-mode conf-mode) . whitespace-mode)
-  :config
-  (setq whitespace-line-column fill-column) ;; limit line length
-  ;; automatically clean up bad whitespace
-  (setq whitespace-action '(auto-cleanup))
-  ;; only show bad whitespace
-  (setq whitespace-style '(face
-                           trailing space-before-tab
-                           indentation empty space-after-tab))
-
-  (with-eval-after-load 'popup
-    ;; advice for whitespace-mode conflict with popup
-    (defvar my-prev-whitespace-mode nil)
-    (make-local-variable 'my-prev-whitespace-mode)
-
-    (defadvice popup-draw (before my-turn-off-whitespace activate compile)
-      "Turn off whitespace mode before showing autocomplete box."
-      (if whitespace-mode
-          (progn
-            (setq my-prev-whitespace-mode t)
-            (whitespace-mode -1))
-        (setq my-prev-whitespace-mode nil)))
-
-    (defadvice popup-delete (after my-restore-whitespace activate compile)
-      "Restore previous whitespace mode when deleting autocomplete box."
-      (if my-prev-whitespace-mode
-          (whitespace-mode 1)))))
-
 ;; Pulse current line
 (use-package pulse
   :ensure nil

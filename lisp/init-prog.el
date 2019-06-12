@@ -101,9 +101,9 @@ _x_: Go external other window
     ("q" nil "quit"))
   (bind-key "C-M-j" #'hydra-dumb-jump/body dumb-jump-mode-map))
 
-(use-package nxml-mode
-  :ensure nil
-  :mode (("\\.xaml$" . xml-mode)))
+(use-package editorconfig
+  :diminish editorconfig-mode
+  :hook (after-init . editorconfig-mode))
 
 ;; Run commands quickly
 (use-package quickrun
@@ -111,7 +111,15 @@ _x_: Go external other window
          ("C-c x" . quickrun)))
 
 (use-package dockerfile-mode)
+(use-package lua-mode)
+(use-package powershell)
 (use-package rmsbolt)                   ; A compiler output viewer
+(use-package swift-mode)
+(use-package vimrc-mode)
+
+(use-package nxml-mode
+  :ensure nil
+  :mode (("\\.xaml$" . xml-mode)))
 
 ;; New `conf-toml-mode' in Emacs 26
 (unless (fboundp 'conf-toml-mode)
@@ -120,6 +128,12 @@ _x_: Go external other window
 (use-package editorconfig
   :diminish editorconfig-mode
   :hook (after-init . editorconfig-mode))
+
+;; Batch Mode eXtras
+(use-package bmx-mode
+  :after company
+  :diminish bmx-mode
+  :hook (after-init . bmx-mode-setup-defaults))
 
 (provide 'init-prog)
 

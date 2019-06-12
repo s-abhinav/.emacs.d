@@ -128,32 +128,6 @@
   (with-eval-after-load 'ert
     (bind-key "o" #'ace-link-help ert-results-mode-map)))
 
-;; ;; Minor mode to aggressively keep your code always indented
-;; (use-package aggressive-indent
-;;   :diminish
-;;   :hook ((after-init . global-aggressive-indent-mode)
-;;          ;; FIXME: Disable in big files due to the performance issues
-;;          ;; https://github.com/Malabarba/aggressive-indent-mode/issues/73
-;;          (find-file . (lambda ()
-;;                         (if (> (buffer-size) (* 3000 80))
-;;                             (aggressive-indent-mode -1)))))
-;;   :config
-;;   ;; Disable in some modes
-;;   (dolist (mode '(asm-mode web-mode html-mode css-mode go-mode))
-;;     (push mode aggressive-indent-excluded-modes))
-
-;;   ;; Be slightly less aggressive in C/C++/C#/Java/Go/Swift
-;;   (add-to-list
-;;    'aggressive-indent-dont-indent-if
-;;    '(and (or (derived-mode-p 'c-mode)
-;;              (derived-mode-p 'c++-mode)
-;;              (derived-mode-p 'csharp-mode)
-;;              (derived-mode-p 'java-mode)
-;;              (derived-mode-p 'go-mode)
-;;              (derived-mode-p 'swift-mode))
-;;          (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
-;;                              (thing-at-point 'line))))))
-
 ;; Show number of matches in mode-line while searching
 (use-package anzu
   :diminish
@@ -236,7 +210,7 @@
   :diminish
   :if (executable-find "aspell")
   :hook (((text-mode outline-mode) . flyspell-mode)
-         (prog-mode . flyspell-prog-mode)
+         ;; (prog-mode . flyspell-prog-mode)
          (flyspell-mode . (lambda ()
                             (dolist (key '("C-;" "C-," "C-."))
                               (unbind-key key flyspell-mode-map)))))
@@ -286,23 +260,8 @@
               undo-tree-history-directory-alist
               `(("." . ,(locate-user-emacs-file "undo-tree-hist/"))))
   :config
-  ;; FIXME:  `undo-tree-visualizer-diff' is a local variable in *undo-tree* buffer.
-  (defun undo-tree-visualizer-show-diff (&optional node)
-    ;; show visualizer diff display
-    (setq-local undo-tree-visualizer-diff t)
-    (let ((buff (with-current-buffer undo-tree-visualizer-parent-buffer
-                  (undo-tree-diff node)))
-          (display-buffer-mark-dedicated 'soft)
-          win)
-      (setq win (split-window))
-      (set-window-buffer win buff)
-      (shrink-window-if-larger-than-buffer win)))
-
-  (defun undo-tree-visualizer-hide-diff ()
-    ;; hide visualizer diff display
-    (setq-local undo-tree-visualizer-diff nil)
-    (let ((win (get-buffer-window undo-tree-diff-buffer-name)))
-      (when win (with-selected-window win (kill-buffer-and-window))))))
+  ;; FIXME:  keep the diff window
+  (make-variable-buffer-local 'undo-tree-visualizer-diff))
 
 ;; Goto last change
 (use-package goto-chg
@@ -335,7 +294,7 @@
     ;; Support LSP
     (use-package lsp-origami
       :hook (origami-mode . (lambda ()
-                              (if lsp-mode
+                              (if (bound-and-true-p lsp-mode)
                                   (lsp-origami-mode))))))
 
   (defhydra hydra-origami (:color blue :hint none)
@@ -355,10 +314,24 @@ _o_: only show current
     ("r" origami-redo)
     ("R" origami-reset)))
 
+;; Open files as another user
+(unless sys/win32p
+  (use-package sudo-edit))
+
 ;; Narrow/Widen
 (use-package fancy-narrow
   :diminish
   :hook (after-init . fancy-narrow-mode))
+
+;; Edit text for browsers with GhostText or AtomicChrome extension
+(use-package atomic-chrome
+  :hook ((emacs-startup . atomic-chrome-start-server)
+         (atomic-chrome-edit-mode . delete-other-windows))
+  :init (setq atomic-chrome-buffer-open-style 'frame)
+  :config
+  (if (fboundp 'gfm-mode)
+      (setq atomic-chrome-url-major-mode-alist
+            '(("github\\.com" . gfm-mode)))))
 
 (provide 'init-edit)
 

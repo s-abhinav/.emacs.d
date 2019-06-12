@@ -22,39 +22,44 @@
 
 ;; Fonts
 (when (display-graphic-p)
-  ;; Set default fonts
-  (cond
-   ((member "Source Code Pro" (font-family-list))
-    (set-face-attribute 'default nil :font "Source Code Pro"))
-   ((member "Menlo" (font-family-list))
-    (set-face-attribute 'default nil :font "Menlo"))
-   ((member "Monaco" (font-family-list))
-    (set-face-attribute 'default nil :font "Monaco"))
-   ((member "DejaVu Sans Mono" (font-family-list))
-    (set-face-attribute 'default nil :font "DejaVu Sans Mono"))
-   ((member "Consolas" (font-family-list))
-    (set-face-attribute 'default nil :font "Consolas")))
+  ;; Set default font
+  (catch 'loop
+    (dolist (font '("SF Mono" "Hack" "Source Code Pro" "Fira Code"
+                    "Menlo" "Monaco" "DejaVu Sans Mono" "Consolas"))
+      (when (member font (font-family-list))
+        (set-face-attribute 'default nil :font font :height (cond
+                                                             (sys/mac-x-p 130)
+                                                             (sys/win32p 110)
+                                                             (t 100)))
+        (throw 'loop t))))
 
   (cond
    (sys/mac-x-p
     (set-face-attribute 'default nil :height 145))
    (sys/win32p
     (set-face-attribute 'default nil :height 110)))
+  ;; Specify font for all unicode characters
+  (catch 'loop
+    (dolist (font '("Symbola" "Apple Symbols" "Symbol"))
+      (when (member font (font-family-list))
+        (set-fontset-font t 'unicode font nil 'prepend)
+        (throw 'loop t))))
 
-  ;; Specify fonts for all unicode characters
-  (cond
-   ((member "Apple Color Emoji" (font-family-list))
-    (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend))
-   ((member "Symbola" (font-family-list))
-    (set-fontset-font t 'unicode "Symbola" nil 'prepend)))
+  ;; Specify font for Chinese characters
+  (catch 'loop
+    (dolist (font '("WenQuanYi Micro Hei" "Microsoft Yahei"))
+      (when (member font (font-family-list))
+        (set-fontset-font t '(#x4e00 . #x9fff) font)
+        (throw 'loop t)))))
 
-  ;; Specify fonts for Chinese characters
-  (cond
-   ((member "WenQuanYi Micro Hei" (font-family-list))
-    (set-fontset-font t '(#x4e00 . #x9fff) "WenQuanYi Micro Hei"))
-   ((member "Microsoft Yahei" (font-family-list))
-    (set-fontset-font t '(#x4e00 . #x9fff) "Microsoft Yahei")))
-  )
+;; Mail
+;; (setq message-send-mail-function 'smtpmail-send-it
+;;       smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+;;       smtpmail-auth-credentials '(("smtp.gmail.com" 587
+;;                                    user-mail-address nil))
+;;       smtpmail-default-smtp-server "smtp.gmail.com"
+;;       smtpmail-smtp-server "smtp.gmail.com"
+;;       smtpmail-smtp-service 587)
 
 ;; Misc.
 ;; (setq confirm-kill-emacs 'y-or-n-p)
