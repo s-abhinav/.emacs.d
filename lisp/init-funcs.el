@@ -61,6 +61,13 @@
 (if sys/mac-x-p
     (bind-key "s-r" #'revert-this-buffer))
 
+;; Reload configurations
+(defun reload-init-file ()
+  "Reload Emacs configurations."
+  (interactive)
+  (load-file user-init-file))
+(bind-key "C-c C-l" #'reload-init-file)
+
 ;; Browse the homepage
 (defun browse-homepage ()
   "Browse the Github page of Centaur Emacs."
@@ -144,13 +151,18 @@
   (switch-to-buffer (get-buffer-create "*scratch*"))
   (lisp-interaction-mode))
 
-;; Save a file as utf-8
+;; Save a file as UTF-8
 (defun save-buffer-as-utf8 (coding-system)
   "Revert a buffer with `CODING-SYSTEM' and save as UTF-8."
   (interactive "zCoding system for visited file (default nil):")
   (revert-buffer-with-coding-system coding-system)
   (set-buffer-file-coding-system 'utf-8)
   (save-buffer))
+
+(defun save-buffer-gbk-as-utf8 ()
+  "Revert a buffer with GBK and save as UTF-8."
+  (interactive)
+  (save-buffer-as-utf8 'gbk))
 
 ;; Recompile elpa directory
 (defun recompile-elpa ()

@@ -25,16 +25,17 @@ latest stable release - currently **26.2**.
 - Better Org/Markdown support.
 - Support multiple programming languages
   - C/C++/Object-C/C#/Java
-  - Python/Ruby/Perl/PHP/Shell/Powershell
+  - Python/Ruby/Perl/PHP/Shell/Powershell/Bat
   - Javascript/Typescript/JSON/YAML
   - HTML/CSS/XML
-  - Golang/Swift/Rust
+  - Golang/Swift/Rust/Dart/Elirix
   - ...
 - Auto completion.
 - Fly syntax check.
 - Fly spell check.
 - Git integration.
 - Project/Workspace integration.
+- Support docker.
 
 ## Prerequisite
 

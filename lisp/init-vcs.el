@@ -36,6 +36,7 @@
 
 ;; Git
 (use-package magit
+  :defines gnutls-algorithm-priority
   :bind (("C-x g" . magit-status)
          ("C-x M-g" . magit-dispatch)
          ("C-c M-g" . magit-file-popup))
@@ -56,7 +57,7 @@
 
 ;; Show tasks
 (use-package magit-todos
-  :hook (ater-init . magit-todos-mode))
+  :hook (after-init . magit-todos-mode))
 
 ;; Walk through git revisions of a file
 (use-package git-timemachine

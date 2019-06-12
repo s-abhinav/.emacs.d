@@ -42,8 +42,8 @@
 (setq icon-title-format frame-title-format)
 
 (when sys/mac-x-p
-  (add-to-list 'default-frame-alist '(ns-appearance . dark))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
   (add-hook 'after-load-theme-hook
             (lambda ()
               (let ((bg (frame-parameter nil 'background-mode)))
@@ -250,8 +250,9 @@
 
 ;; Mouse & Smooth Scroll
 ;; Scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-(setq mouse-wheel-progressive-speed nil)
+(when (display-graphic-p)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
+        mouse-wheel-progressive-speed nil))
 (setq scroll-step 1
       scroll-margin 0
       scroll-conservatively 100000)
@@ -299,8 +300,10 @@
 (setq line-move-visual nil)
 (setq inhibit-compacting-font-caches t) ; Don’t compact font caches during GC.
 
-;; Don't open a file in a new frame
-(when (boundp 'ns-pop-up-frames)
+(when sys/macp
+  ;; Render thinner fonts
+  (setq ns-use-thin-smoothing t)
+  ;; Don't open a file in a new frame
   (setq ns-pop-up-frames nil))
 
 ;; Don't use GTK+ tooltip

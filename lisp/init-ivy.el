@@ -37,8 +37,8 @@
   :diminish ivy-mode counsel-mode
   :defines (projectile-completion-system magit-completing-read-function)
   :commands swiper-isearch
-  :bind (("C-s" . swiper)
-         ("s-f" . swiper-isearch)
+  :bind (("C-s" . swiper-isearch)
+         ("s-f" . swiper)
          ("C-S-s" . swiper-all)
 
          ("C-c C-r" . ivy-resume)
@@ -51,6 +51,7 @@
          ([remap dired] . counsel-dired)
          ("C-x C-r" . counsel-recentf)
          ("C-x j" . counsel-mark-ring)
+         ("C-h F" . counsel-describe-face)
 
          ("C-c L" . counsel-load-library)
          ("C-c P" . counsel-package)
@@ -119,7 +120,6 @@
           (counsel-grep . ivy--regex-plus)
           (t . ivy--regex-fuzzy)))
 
-  ;; For alignment `tab-width' must be 1 in minibuffer
   (defun my-ivy-format-function-arrow (cands)
     "Transform CANDS into a string for minibuffer."
     (ivy--format-function-generic
@@ -127,10 +127,10 @@
        (concat (if (display-graphic-p)
                    (all-the-icons-octicon "chevron-right" :height 0.8 :v-adjust -0.05)
                  ">")
-               "\t"
+               (propertize " " 'display `(space :align-to 2))
                (ivy--add-face str 'ivy-current-match)))
      (lambda (str)
-       (concat "\t\t" str))
+       (concat (propertize " " 'display `(space :align-to 2)) str))
      cands
      "\n"))
   (setq ivy-format-function 'my-ivy-format-function-arrow)
@@ -173,7 +173,9 @@
                  (append unread-command-events
                          (listify-key-sequence (kbd "M-p")))))
           ((memq this-command '(self-insert-command
-                                ivy-yank-word))
+                                yank
+                                ivy-yank-word
+                                counsel-yank-pop))
            (delete-region (point)
                           (point-max)))))
 

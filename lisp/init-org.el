@@ -44,8 +44,8 @@
          (org-indent-mode . (lambda() (diminish 'org-indent-mode))))
   :config
   (setq org-agenda-files '("~/org")
-        org-todo-keywords '((sequence "TODO(T)" "DOING(I)" "HANGUP(H)" "|" "DONE(D)" "CANCEL(C)")
-                            (sequence "⚑(t)" "🏴(i)" "❓(h)" "|" "✔(d)" "✘(c)"))
+        org-todo-keywords '((sequence "TODO(t)" "DOING(i)" "HANGUP(h)" "|" "DONE(d)" "CANCEL(c)")
+                            (sequence "⚑(T)" "🏴(I)" "❓(H)" "|" "✔(D)" "✘(C)"))
         org-todo-keyword-faces '(("HANGUP" . warning)
                                  ("❓" . warning))
         org-log-done 'time
@@ -57,6 +57,9 @@
         )
 
   (add-to-list 'org-export-backends 'md)
+
+  ;; Override `org-switch-to-buffer-other-window' for compatibility with `shackle'
+  (advice-add #'org-switch-to-buffer-other-window :override #'switch-to-buffer-other-window)
 
   ;; More fancy UI
   (use-package org-bullets
