@@ -33,6 +33,13 @@
 (eval-when-compile
   (require 'init-const))
 
+;; Highlight matching parens
+(use-package paren
+  :ensure nil
+  :hook (after-init . show-paren-mode)
+  :config (setq show-paren-when-point-inside-paren t
+                show-paren-when-point-in-periphery t))
+
 ;; Highlight symbols
 (use-package symbol-overlay
   :diminish
@@ -87,24 +94,16 @@
 ;; Highlight TODO and similar keywords in comments and strings
 (use-package hl-todo
   :bind (:map hl-todo-mode-map
-              ([C-f3] . hl-todo-occur)
-              ("C-c t p" . hl-todo-previous)
-              ("C-c t n" . hl-todo-next)
-              ("C-c t o" . hl-todo-occur))
+         ([C-f3] . hl-todo-occur)
+         ("C-c t p" . hl-todo-previous)
+         ("C-c t n" . hl-todo-next)
+         ("C-c t o" . hl-todo-occur))
   :hook (after-init . global-hl-todo-mode)
   :config
   (dolist (keyword '("BUG" "DEFECT" "ISSUE"))
     (cl-pushnew `(,keyword . ,(face-foreground 'error)) hl-todo-keyword-faces))
   (dolist (keyword '("WORKAROUND" "HACK" "TRICK"))
-    (cl-pushnew `(,keyword . ,(face-foreground 'warning)) hl-todo-keyword-faces))
-
-  ;; Set `hl-todo' faces
-  ;; Don't use `:custom-face' since it needs `hl-todo' face itself to evaluate
-  (custom-set-faces `(hl-todo ((t (:background
-                                   ,(if (fboundp 'doom-blend)
-                                        (doom-blend (face-foreground 'hl-todo)
-                                                    (face-background 'default)
-                                                    0.2))))))))
+    (cl-pushnew `(,keyword . ,(face-foreground 'warning)) hl-todo-keyword-faces)))
 
 ;; Highlight uncommitted changes
 (use-package diff-hl
@@ -115,7 +114,7 @@
   (diff-hl-delete ((t (:inherit 'error :inverse-video t))))
   (diff-hl-insert ((t (:inherit 'success :inverse-video t))))
   :bind (:map diff-hl-command-map
-              ("SPC" . diff-hl-mark-hunk))
+         ("SPC" . diff-hl-mark-hunk))
   :hook ((after-init . global-diff-hl-mode)
          (dired-mode . diff-hl-dired-mode))
   :config

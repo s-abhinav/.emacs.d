@@ -36,7 +36,6 @@
 (use-package counsel
   :diminish ivy-mode counsel-mode
   :defines (projectile-completion-system magit-completing-read-function recentf-list)
-  :commands swiper-isearch
   :bind (("C-s" . swiper-isearch)
          ("s-f" . swiper)
          ("C-S-s" . swiper-all)
@@ -64,6 +63,7 @@
          ("C-c r" . counsel-rg)
          ("C-c z" . counsel-fzf)
 
+         ("C-c c F" . counsel-faces)
          ("C-c c L" . counsel-load-library)
          ("C-c c P" . counsel-package)
          ("C-c c a" . counsel-apropos)
@@ -87,7 +87,7 @@
          ;; Find counsel commands quickly
          ("<f6>" . (lambda ()
                      (interactive)
-                     (counsel-M-x "^counsel ")))
+                     (counsel-M-x "^counsel-")))
 
          :map ivy-minibuffer-map
          ("C-w" . ivy-yank-word)
@@ -103,35 +103,22 @@
          ("M-s" . swiper-isearch-toggle))
   :hook ((after-init . ivy-mode)
          (ivy-mode . counsel-mode))
-  :config
+  :init
   (setq enable-recursive-minibuffers t) ; Allow commands in minibuffers
 
-  (setq ivy-use-selectable-prompt t)
-  (setq ivy-use-virtual-buffers t)    ; Enable bookmarks and recentf
-  (setq ivy-height 10)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq ivy-on-del-error-function nil)
-  ;; (setq ivy-format-function 'ivy-format-function-arrow)
-  (setq ivy-initial-inputs-alist nil)
-
-  (defun my-ivy-format-function-arrow (cands)
-    "Transform CANDS into a string for minibuffer."
-    (ivy--format-function-generic
-     (lambda (str)
-       (concat (if (display-graphic-p)
-                   (all-the-icons-octicon "chevron-right" :height 0.8 :v-adjust -0.05)
-                 ">")
-               (propertize " " 'display `(space :align-to 2))
-               (ivy--add-face str 'ivy-current-match)))
-     (lambda (str)
-       (concat (propertize " " 'display `(space :align-to 2)) str))
-     cands
-     "\n"))
-  (setq ivy-format-function 'my-ivy-format-function-arrow)
+  (setq ivy-use-selectable-prompt t
+        ivy-use-virtual-buffers t    ; Enable bookmarks and recentf
+        ivy-height 10
+        ivy-count-format "(%d/%d) "
+        ivy-on-del-error-function nil
+        ivy-initial-inputs-alist nil)
 
   (setq swiper-action-recenter t)
-  (setq counsel-find-file-at-point t)
-  (setq counsel-yank-pop-separator "\n-------\n")
+
+  (setq counsel-find-file-at-point t
+        counsel-yank-pop-separator "\n────────\n")
+  :config
+  (add-to-list 'ivy-format-functions-alist '(counsel-describe-face . counsel--faces-format-function))
 
   ;; Use faster search tools: ripgrep or the silver search
   (let ((cmd (cond ((executable-find "rg")
@@ -256,7 +243,7 @@
   ;; Additional key bindings for Ivy
   (use-package ivy-hydra
     :bind (:map ivy-minibuffer-map
-                ("M-o" . ivy-dispatching-done-hydra)))
+           ("M-o" . ivy-dispatching-done-hydra)))
 
   ;; Ivy integration for Projectile
   (use-package counsel-projectile
@@ -281,7 +268,7 @@
   (use-package flyspell-correct-ivy
     :after flyspell
     :bind (:map flyspell-mode-map
-                ([remap flyspell-correct-word-before-point] . flyspell-correct-previous-word-generic)))
+           ([remap flyspell-correct-word-before-point] . flyspell-correct-previous-word-generic)))
 
   ;; Quick launch apps
   (cond
@@ -290,13 +277,22 @@
    (sys/macp
     (use-package counsel-osx-app
       :bind (:map counsel-mode-map
-                  ("C-<f6>" . counsel-osx-app)))))
+             ("C-<f6>" . counsel-osx-app)))))
 
   ;; Tramp ivy interface
   (use-package counsel-tramp
     :bind (:map counsel-mode-map
                 ("C-c c v" . counsel-tramp)))
   )
+  ;; Display world clock using Ivy
+  (use-package counsel-world-clock
+    :bind (:map counsel-mode-map
+           ("C-c c k" . counsel-world-clock)))
+
+  ;; Tramp ivy interface
+  (use-package counsel-tramp
+    :bind (:map counsel-mode-map
+           ("C-c c v" . counsel-tramp)))
 
 ;; More friendly display transformer for Ivy
 (use-package ivy-rich
@@ -355,6 +351,11 @@
             (all-the-icons-faicon "file-o" :face 'all-the-icons-dsilver :height 0.8 :v-adjust 0.0)
           icon))))
 
+  (defun ivy-rich-dir-icon (candidate)
+    "Display directory icons in `ivy-rich'."
+    (when (display-graphic-p)
+      (all-the-icons-octicon "file-directory" :height 1.0 :v-adjust 0.01)))
+
   (defun ivy-rich-function-icon (_candidate)
     "Display function icons in `ivy-rich'."
     (when (display-graphic-p)
@@ -365,15 +366,30 @@
     (when (display-graphic-p)
       (all-the-icons-faicon "tag" :height 0.9 :v-adjust -0.05 :face 'all-the-icons-lblue)))
 
-  (defun ivy-rich-face-icon (_candidate)
-    "Display face icons in `ivy-rich'."
+  (defun ivy-rich-symbol-icon (_candidate)
+    "Display symbol icons in `ivy-rich'."
     (when (display-graphic-p)
-      (all-the-icons-material "palette" :height 1.0 :v-adjust -0.2)))
+      (all-the-icons-octicon "gear" :height 0.9 :v-adjust -0.05)))
+
+  (defun ivy-rich-theme-icon (_candidate)
+    "Display theme icons in `ivy-rich'."
+    (when (display-graphic-p)
+      (all-the-icons-material "palette" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-lblue)))
 
   (defun ivy-rich-keybinding-icon (_candidate)
     "Display keybindings icons in `ivy-rich'."
     (when (display-graphic-p)
       (all-the-icons-material "keyboard" :height 1.0 :v-adjust -0.2)))
+
+  (defun ivy-rich-library-icon (_candidate)
+    "Display library icons in `ivy-rich'."
+    (when (display-graphic-p)
+      (all-the-icons-material "view_module" :height 1.0 :v-adjust -0.2 :face 'all-the-icons-lblue)))
+
+  (defun ivy-rich-package-icon (_candidate)
+    "Display package icons in `ivy-rich'."
+    (when (display-graphic-p)
+      (all-the-icons-faicon "archive" :height 0.9 :v-adjust 0.0 :face 'all-the-icons-silver)))
 
   (when (display-graphic-p)
     (defun ivy-rich-bookmark-type-plus (candidate)
@@ -471,17 +487,20 @@
           (:columns
            ((ivy-rich-function-icon)
             (counsel-describe-function-transformer (:width 50))
-            (ivy-rich-counsel-function-docstring (:face font-lock-doc-face)))
-           :delimiter "\t")
+            (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
           counsel-describe-variable
           (:columns
            ((ivy-rich-variable-icon)
             (counsel-describe-variable-transformer (:width 50))
-            (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face)))
-           :delimiter "\t")
-          counsel-describe-face
+            (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face))))
+          counsel-apropos
           (:columns
-           ((ivy-rich-face-icon)
+           ((ivy-rich-symbol-icon)
+            (ivy-rich-candidate))
+           :delimiter "\t")
+          counsel-info-lookup-symbol
+          (:columns
+           ((ivy-rich-symbol-icon)
             (ivy-rich-candidate))
            :delimiter "\t")
           counsel-descbinds
@@ -509,6 +528,11 @@
            ((ivy-rich-file-icon)
             (ivy-rich-candidate))
            :delimiter "\t")
+          counsel-fzf
+          (:columns
+           ((ivy-rich-file-icon)
+            (ivy-rich-candidate))
+           :delimiter "\t")
           counsel-git
           (:columns
            ((ivy-rich-file-icon)
@@ -526,6 +550,26 @@
             (ivy-rich-bookmark-name (:width 40))
             (ivy-rich-bookmark-info))
            :delimiter "\t")
+          counsel-package
+          (:columns
+           ((ivy-rich-package-icon)
+            (ivy-rich-candidate))
+           :delimiter "\t")
+          counsel-find-library
+          (:columns
+           ((ivy-rich-library-icon)
+            (ivy-rich-candidate))
+           :delimiter "\t")
+          counsel-load-library
+          (:columns
+           ((ivy-rich-library-icon)
+            (ivy-rich-candidate))
+           :delimiter "\t")
+          counsel-load-theme
+          (:columns
+           ((ivy-rich-theme-icon)
+            (ivy-rich-candidate))
+           :delimiter "\t")
           counsel-projectile-switch-project
           (:columns
            ((ivy-rich-file-icon)
@@ -538,7 +582,7 @@
            :delimiter "\t")
           counsel-projectile-find-dir
           (:columns
-           ((ivy-rich-file-icon)
+           ((ivy-rich-dir-icon)
             (counsel-projectile-find-dir-transformer))
            :delimiter "\t")
           treemacs-projectile

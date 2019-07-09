@@ -68,27 +68,38 @@
 
   ;; ANSI & XTERM 256 color support
   (use-package xterm-color
-    :defines compilation-environment
     :init
     (setenv "TERM" "xterm-256color")
     (setq comint-output-filter-functions
           (remove 'ansi-color-process-output comint-output-filter-functions))
 
     (add-hook 'shell-mode-hook
-              (lambda () (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))))
+              (lambda ()
+                ;; Disable font-locking in this buffer to improve performance
+                (font-lock-mode -1)
+                ;; Prevent font-locking from being re-enabled in this buffer
+                (make-local-variable 'font-lock-function)
+                (setq font-lock-function (lambda (_) nil))
+                (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))))
 
-;; Multi term
-(use-package multi-term)
+;; Better term
+(when (and (executable-find "cmake")
+           (executable-find "make"))
+  (use-package vterm
+    :init (defalias #'term #'vterm)))
 
 ;; Shell Pop
 (use-package shell-pop
   :bind ([f9] . shell-pop)
-  :init (let ((val
-               (if sys/win32p
-                   '("eshell" "*eshell*" (lambda () (eshell)))
-                 '("ansi-term" "*ansi-term*"
-                   (lambda () (ansi-term shell-pop-term-shell))))))
-          (setq shell-pop-shell-type val)))
+  :init
+  (setq shell-pop-shell-type (cond
+                              (sys/win32p
+                               '("eshell" "*eshell*" (lambda () (eshell))))
+                              ((fboundp 'vterm)
+                               '("vterm" "*vterm*" (lambda () (vterm))))
+                              (t
+                               '("ansi-term" "*ansi-term*"
+                                 (lambda () (ansi-term shell-pop-term-shell)))))))
 
 (provide 'init-shell)
 

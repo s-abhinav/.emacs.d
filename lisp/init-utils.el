@@ -47,8 +47,8 @@
 ;; Writable `grep' buffer
 (use-package wgrep
   :init
-  (setq wgrep-auto-save-buffer t)
-  (setq wgrep-change-readonly-file t))
+  (setq wgrep-auto-save-buffer t
+        wgrep-change-readonly-file t))
 
 ;; `find-dired' alternative using `fd'
 (when (executable-find "fd")
@@ -60,8 +60,8 @@
     :defines projectile-command-map
     :hook (after-init . rg-enable-default-bindings)
     :config
-    (setq rg-group-result t)
-    (setq rg-show-columns t)
+    (setq rg-group-result t
+          rg-show-columns t)
 
     (cl-pushnew '("tmpl" . "*.tmpl") rg-custom-type-aliases)
 
@@ -70,18 +70,18 @@
       (bind-key "s R" #'rg-project projectile-command-map))
 
     (with-eval-after-load 'counsel
-      (bind-keys :map rg-global-map
-                 ("c r" . counsel-rg)
-                 ("c s" . counsel-ag)
-                 ("c p" . counsel-pt)
-                 ("c f" . counsel-fzf)))))
+      (bind-keys
+       :map rg-global-map
+       ("c r" . counsel-rg)
+       ("c s" . counsel-ag)
+       ("c p" . counsel-pt)
+       ("c f" . counsel-fzf)))))
 
 ;; Docker
 (use-package docker
   :bind ("C-c d" . docker)
-  :init
-  (setq docker-image-run-arguments '("-i" "-t" "--rm"))
-  (setq docker-container-shell-file-name "/bin/bash"))
+  :init (setq docker-image-run-arguments '("-i" "-t" "--rm")
+              docker-container-shell-file-name "/bin/bash"))
 
 ;; Tramp
 (use-package docker-tramp)
@@ -106,7 +106,7 @@
         (save-buffer))))
   :hook (after-init . persistent-scratch-setup-default)
   :bind (:map lisp-interaction-mode-map
-              ("C-x C-s" . my-save-buffer)))
+         ("C-x C-s" . my-save-buffer)))
 
 ;; PDF reader
 (when (display-graphic-p)
@@ -116,7 +116,7 @@
     :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
     :magic ("%PDF" . pdf-view-mode)
     :bind (:map pdf-view-mode-map
-                ("C-s" . isearch-forward))
+           ("C-s" . isearch-forward))
     :init
     (setq pdf-view-midnight-colors '("#ededed" . "#21242b")
           pdf-annot-activate-created-annotations t)
@@ -152,6 +152,7 @@
   :init (setq olivetti-body-width 0.618))
 
 ;; Misc
+(use-package bongo)                     ; music player
 (use-package copyit)                    ; copy path, url, etc.
 (use-package daemons)                   ; system services/daemons
 (use-package diffview)                  ; side-by-side diff view

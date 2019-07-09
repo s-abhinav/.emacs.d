@@ -38,7 +38,7 @@
   :init
   (setq-default prettify-symbols-alist
                 '(("lambda" . ?λ)
-                  ("<-" . "←")
+                  ("<-" . ?←)
                   ("->" . ?→)
                   ("->>" . ?↠)
                   ("=>" . ?⇒)
@@ -59,18 +59,17 @@
 ;; Compilation Mode
 (use-package compile
   :ensure nil
-  :preface
+  :hook (compilation-filter . my-colorize-compilation-buffer)
+  :init
   ;; ANSI Coloring
   ;; @see https://stackoverflow.com/questions/13397737/ansi-coloring-in-compilation-mode
   (defun my-colorize-compilation-buffer ()
     "ANSI coloring in compilation buffers."
     (when (eq major-mode 'compilation-mode)
-      (ansi-color-apply-on-region compilation-filter-start (point-max))))
-  :hook (compilation-filter . my-colorize-compilation-buffer))
+      (ansi-color-apply-on-region compilation-filter-start (point-max)))))
 
 ;; Jump to definition via `ag'/`rg'/`grep'
 (use-package dumb-jump
-  :functions dumb-jump-hydra/body
   :bind (("M-g o" . dumb-jump-go-other-window)
          ("M-g j" . dumb-jump-go)
          ("M-g i" . dumb-jump-go-prompt)

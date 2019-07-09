@@ -35,6 +35,7 @@
   (require 'init-custom))
 
 ;; Dashboard
+(unless emacs/>=25.3p (setq centaur-dashboard nil))
 (when centaur-dashboard
   (use-package dashboard
     :diminish (dashboard-mode page-break-lines-mode)
@@ -153,7 +154,8 @@
           (error
            (message "Error: Unable to restore last session -- %s" err)))
         (when (persp-get-buffer-or-null persp-special-last-buffer)
-          (persp-switch-to-buffer persp-special-last-buffer))))
+          (persp-switch-to-buffer persp-special-last-buffer))
+        (message "Done")))
 
     (defun quit-dashboard ()
       "Quit dashboard window."
@@ -210,9 +212,10 @@ _S_ettings           _p_: Projects        _C-p_: Previous Line
       ("Q" quit-dashboard :exit t)
       ("q" nil "quit")
       ("C-g" nil "quit"))
-    (bind-keys :map dashboard-mode-map
-               ("h" . hydra-dashboard/body)
-               ("?" . hydra-dashboard/body))))
+    (bind-keys
+     :map dashboard-mode-map
+     ("h" . hydra-dashboard/body)
+     ("?" . hydra-dashboard/body))))
 
 (provide 'init-dashboard)
 

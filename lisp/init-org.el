@@ -37,13 +37,29 @@
   :ensure nil
   :commands org-try-structure-completion
   :functions hydra-org-template/body
-  :custom-face
-  (org-ellipsis ((t (:foreground nil))))
+  :custom-face (org-ellipsis ((t (:foreground nil))))
   :bind (("C-c a" . org-agenda)
          ("C-c b" . org-switchb))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
          (org-indent-mode . (lambda() (diminish 'org-indent-mode))))
+  :hook ((org-mode . (lambda ()
+                       "Beautify Org Checkbox Symbol"
+                       (push '("[ ]" . ?☐) prettify-symbols-alist)
+                       (push '("[X]" . ?☑) prettify-symbols-alist)
+                       (push '("[-]" . ?❍) prettify-symbols-alist)
+                       (push '("#+BEGIN_SRC" . ?✎) prettify-symbols-alist)
+                       (push '("#+END_SRC" . ?□) prettify-symbols-alist)
+                       (push '("#+BEGIN_QUOTE" . ?») prettify-symbols-alist)
+                       (push '("#+END_QUOTE" . ?«) prettify-symbols-alist)
+                       (push '("#+HEADERS" . ?☰) prettify-symbols-alist)
+                       (prettify-symbols-mode 1)))
+         (org-indent-mode . (lambda()
+                              (diminish 'org-indent-mode)
+                              ;; WORKAROUND: Prevent text moving around while using brackets
+                              ;; @see https://github.com/seagle0128/.emacs.d/issues/88
+                              (make-variable-buffer-local 'show-paren-mode)
+                              (setq show-paren-mode nil))))
   :config
   (setq org-agenda-files '("~/org")
         org-todo-keywords '((sequence "TODO(t)" "DOING(i)" "HANGUP(h)" "|" "DONE(d)" "CANCEL(c)")
@@ -59,23 +75,10 @@
         org-src-window-setup 'current-window
         )
 
+  ;; Enable markdown backend
   (add-to-list 'org-export-backends 'md)
 
-  ;; Override `org-switch-to-buffer-other-window' for compatibility with `shackle'
-  (with-eval-after-load 'shackle
-    (advice-add #'org-switch-to-buffer-other-window :override #'switch-to-buffer-other-window))
-
   ;; Prettify UI
-  (add-hook 'org-mode-hook
-            (lambda ()
-              "Beautify Org Checkbox Symbol"
-              (push '("[ ]" . "☐") prettify-symbols-alist)
-              (push '("[X]" . "☑") prettify-symbols-alist)
-              (push '("[-]" . "❍") prettify-symbols-alist)
-              (push '("#+BEGIN_SRC" . "λ") prettify-symbols-alist)
-              (push '("#+END_SRC" . "λ") prettify-symbols-alist)
-              (prettify-symbols-mode)))
-
   (use-package org-bullets
     :if (char-displayable-p ?◉)
     :hook (org-mode . org-bullets-mode))
@@ -112,7 +115,7 @@
   ;; Rich text clipboard
   (use-package org-rich-yank
     :bind (:map org-mode-map
-                ("C-M-y" . org-rich-yank)))
+           ("C-M-y" . org-rich-yank)))
 
   ;; Table of contents
   (use-package toc-org
@@ -128,12 +131,12 @@
     :functions (org-display-inline-images
                 org-remove-inline-images)
     :bind (:map org-mode-map
-                ("C-<f7>" . org-tree-slide-mode)
-                :map org-tree-slide-mode-map
-                ("<left>" . org-tree-slide-move-previous-tree)
-                ("<right>" . org-tree-slide-move-next-tree)
-                ("S-SPC" . org-tree-slide-move-previous-tree)
-                ("SPC" . org-tree-slide-move-next-tree))
+           ("C-<f7>" . org-tree-slide-mode)
+           :map org-tree-slide-mode-map
+           ("<left>" . org-tree-slide-move-previous-tree)
+           ("<right>" . org-tree-slide-move-next-tree)
+           ("S-SPC" . org-tree-slide-move-previous-tree)
+           ("SPC" . org-tree-slide-move-next-tree))
     :hook ((org-tree-slide-play . (lambda ()
                                     (text-scale-increase 4)
                                     (org-display-inline-images)
