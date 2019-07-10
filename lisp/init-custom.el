@@ -80,14 +80,14 @@
 If Non-nil, use dashboard, otherwise will restore previous session."
   :type 'boolean)
 
-(defcustom centaur-lsp 'lsp-mode
+(defcustom centaur-lsp nil
   "Set language server."
   :type '(choice
           (const :tag "LSP Mode" 'lsp-mode)
           (const :tag "eglot" 'eglot)
           nil))
 
-(defcustom centaur-chinese-calendar t
+(defcustom centaur-chinese-calendar nil
   "Use Chinese calendar or not."
   :type 'boolean)
 
