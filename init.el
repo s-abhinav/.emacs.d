@@ -140,9 +140,10 @@ Activate this advice with:
 (require 'init-projectile)
 (require 'init-lsp)
 
-(require 'init-emacs-lisp)
-(require 'init-lisp)
 (require 'init-c)
+(require 'init-emacs-lisp)
+(require 'init-java)
+(require 'init-lisp)
 (require 'init-prog)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
