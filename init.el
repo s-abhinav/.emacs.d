@@ -144,6 +144,7 @@ Activate this advice with:
 (require 'init-emacs-lisp)
 (require 'init-java)
 (require 'init-lisp)
+(require 'init-python)
 (require 'init-prog)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

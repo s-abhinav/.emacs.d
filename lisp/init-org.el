@@ -101,6 +101,7 @@
                                (scheme . t)
                                (C . t)
                                (java . t)
+                               (python . t)
                                ))
 
 
@@ -108,6 +109,11 @@
   (if emacs/>=26p
       (cl-pushnew '(shell . t) load-language-list)
     (cl-pushnew '(sh . t) load-language-list))
+
+  (use-package ob-ipython
+    :if (executable-find "jupyter")     ; DO NOT remove
+    :init (cl-pushnew '(ipython . t) load-language-list))
+
 
   (org-babel-do-load-languages 'org-babel-load-languages
                                load-language-list)
