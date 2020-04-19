@@ -191,7 +191,7 @@ _li_sp       ^ ^         _P_erl tangled  plant_u_ml
     ("La" (hot-expand "<L"))
     ("i" (hot-expand "<i"))
     ("e" (hot-expand "<s" "emacs-lisp"))
-    ("y" (hot-expand "<s" "python :results output"))
+    ("y" (hot-expand "<s" "python :session :exports both :results raw drawer"))
     ("Y" (hot-expand "<s" "ipython :session :exports both :results raw drawer\n$0"))
     ("g" (hot-expand "<s" "go :imports '\(\"fmt\"\)"))
     ("p" (hot-expand "<s" "perl"))
