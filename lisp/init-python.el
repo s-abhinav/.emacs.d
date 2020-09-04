@@ -52,6 +52,10 @@
   ;; Live Coding in Python
   (use-package live-py-mode))
 
+(add-hook 'python-mode-hook
+          (lambda ()
+            (prettify-symbols-mode -1)))
+
 (provide 'init-python)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
