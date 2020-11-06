@@ -31,11 +31,12 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'init-const))
+  (require 'init-const)
+  (require 'org-tempo))
 
 (use-package org
   :ensure nil
-  :commands org-try-structure-completion
+  :commands org-tempo-complete-tag
   :functions hydra-org-template/body
   :custom-face (org-ellipsis ((t (:foreground nil))))
   :bind (("C-c a" . org-agenda)
@@ -166,7 +167,7 @@
           (setq text (buffer-substring (region-beginning) (region-end)))
           (delete-region (region-beginning) (region-end)))
         (insert str)
-        (org-try-structure-completion)
+        (org-tempo-complete-tag)
         (when mod (insert mod) (forward-line))
         (when text (insert text)))))
 
