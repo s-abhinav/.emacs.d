@@ -49,6 +49,8 @@
                        (push '("[ ]" . ?☐) prettify-symbols-alist)
                        (push '("[X]" . ?☑) prettify-symbols-alist)
                        (push '("[-]" . ?❍) prettify-symbols-alist)
+                       (push '("#+begin_src" . ?λ) prettify-symbols-alist)
+                       (push '("#+end_src" . ?λ) prettify-symbols-alist)
                        (push '("#+BEGIN_SRC" . ?λ) prettify-symbols-alist)
                        (push '("#+END_SRC" . ?λ) prettify-symbols-alist)
                        (push '("#+BEGIN_QUOTE" . ?») prettify-symbols-alist)
