@@ -181,6 +181,7 @@ _a_scii   _v_erse     ip_Y_thon       _I_NCLUDE:
 _s_rc     _g_o        _r_uby          _H_TML:
 _h_tml    _S_HELL     _p_erl          _A_SCII:
 _li_sp       ^ ^         _P_erl tangled  plant_u_ml
+_ls_cheme
 "
     ("s" (hot-expand "<s"))
     ("E" (hot-expand "<e"))
@@ -189,6 +190,7 @@ _li_sp       ^ ^         _P_erl tangled  plant_u_ml
     ("c" (hot-expand "<c"))
     ("la" (hot-expand "<l"))
     ("li" (hot-expand "<s" "lisp :exports both :results replace drawer" ))
+    ("ls" (hot-expand "<s" "scheme" ))
     ("h" (hot-expand "<h"))
     ("a" (hot-expand "<a"))
     ("La" (hot-expand "<L"))
