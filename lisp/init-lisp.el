@@ -5,6 +5,8 @@
   :config (setq inferior-lisp-program "sbcl"))
 
 ;; Scheme
+(use-package geiser-guile)
+
 (use-package geiser
   :config
   (setq geiser-active-implementations '(guile)))
